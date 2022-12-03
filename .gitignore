@@ -360,4 +360,4 @@ $RECYCLE.BIN/
 /chatbots
 config.cfg
 convosGen/
-proyecto/codigo/pythonscripts/*.txt
+proyecto/codigo/pythonscripts/bot-utterance
