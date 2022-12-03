@@ -6,6 +6,7 @@ from random import choice, sample
 from re import sub
 from shutil import copy
 from time import sleep
+import configparser
 
 """
 We are going to try to get all the convos of a chatbot in order to get botium results
@@ -208,7 +209,7 @@ def generateConvos(intentDict, intent, entityDict, chatbot, nTrainingUtterances)
     intentName = intentDict[intent]["name"]
 
     #Estas uterances están en forma de listas de listas de tuplas
-    utterances = getIntentUtterances("/home/sergio/Desktop/chatbots/{}/intents".format(chatbot), intent, nTrainingUtterances)
+    utterances = getIntentUtterances(config_details['root_project_dir'] + "/chatbots/{}/intents".format(chatbot), intent, nTrainingUtterances)
     requiredParams = checkRequiredEntities(intentDict, intent)
     dirAux="../convosGen/{}".format(chatbot)
     if not exists(dirAux):
@@ -334,7 +335,7 @@ def includeConvoFromContext(intentDict, parentId, i, chatbot):
         #print(parentId)
         #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         if intentDict[intent]['id'] == parentId:
-            file = "/home/sergio/Desktop/proyecto/codigo/convosGen/{}".format(chatbot)+"/" +''.join(i for i in intent if not i in tokensRemoved)+"_"+i+".convo.txt"
+            file = config_details['root_project_dir'] + "/proyecto/codigo/convosGen/{}".format(chatbot)+"/" +''.join(i for i in intent if not i in tokensRemoved)+"_"+i+".convo.txt"
             print(file)
             f=open(file, "r")
             if f.mode == 'r':
@@ -654,12 +655,20 @@ def separateConvosByIntents(dependenciesDict, convosDir, removeFiles):
         for f in intentFiles:
             remove(f)
 
+def get_config_dict(section_name):
+    if not hasattr(get_config_dict, 'config_dict'):
+        get_config_dict.config_dict = dict(config.items(section_name))
+    return get_config_dict.config_dict
 
 if __name__ == "__main__":
 
     chatbots = ["Miso-Test", "RoomReservation", "viberSampleNutrition"]
     nTrainingUtterances = [ 1000, 10, 1000 ]
     i=0
+
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
+    config_details = get_config_dict('project')
 
     for chatbot in chatbots:
 
@@ -668,7 +677,7 @@ if __name__ == "__main__":
         else:
             separateConvosByIntentsFlag = 0
 
-        entityDir = "/home/sergio/Desktop/chatbots/{}/entities".format(chatbot)
+        entityDir = config_details['root_project_dir'] + "/chatbots/{}/entities".format(chatbot)
         if exists(entityDir):
 
             entityDict = getEntities(entityDir)
@@ -681,7 +690,7 @@ if __name__ == "__main__":
         entityCombDict = getEntitiesCombWords(entityDict)
         #print(entityCombDict)
 
-        intentDict = getIntents("/home/sergio/Desktop/chatbots/{}/intents".format(chatbot))
+        intentDict = getIntents(config_details['root_project_dir'] + "/chatbots/{}/intents".format(chatbot))
         #getIntents("/home/sergio/Escritorio/chatbots/viberSampleNutrition/intents") fin de cuarentena
         #for intent in intentDict.keys():
         #	print("\n\n\n\n", intentDict[intent])
@@ -693,4 +702,4 @@ if __name__ == "__main__":
         i += 1
 
         if separateConvosByIntentsFlag == 1:
-            separateConvosByIntents(dependenciesDict, "/home/sergio/Desktop/proyecto/codigo/convosGen/{}".format(chatbot), True)
+            separateConvosByIntents(dependenciesDict, config_details['root_project_dir'] + "/proyecto/codigo/convosGen/{}".format(chatbot), True)
