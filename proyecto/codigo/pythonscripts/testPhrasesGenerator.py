@@ -909,5 +909,5 @@ if __name__ == "__main__":
     generateUtterances(["mutateUtterance", "mutateUtteranceWithDistances", "deleteChars", "traductionChained",
 						"randomTraductionChained", "changeNumberToWord", "changeWordToNumber", "noMutation"],
 					   config_details['chatbot_to_test'],
-					   config_details['root_project_dir'] + "/proyecto/codigo/pythonscripts",
+					   "",
 					   [0, 0, 0, 0, 0, 0, 0.2, 0])
