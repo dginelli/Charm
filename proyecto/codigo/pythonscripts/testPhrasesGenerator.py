@@ -19,6 +19,8 @@ from operator import itemgetter
 from os import remove
 import configparser
 
+import stanza
+
 keyboardQWERTYSpanish = [[['1','!'],['2','"'],['3','·'],['4','$'],['5','%'],['6','&'],['7','/'],['8','('],['9',')'],['0','='],['\'','?'],['¡','¿']],
                         [['q','Q'],['w', 'W'],['e','E'],['r','R'],['t','T'],['y','Y'],['u','U'],['i','I'],['o','O'],['p','P'],['`','^'],['+','*']],
                         [['a','A'],['s','S'],['d','D'],['f','F'],['g','G'],['h','H'],['j','J'],['k','K'],['l','L'],['ñ','Ñ'],['\'','̈́'],['ç','Ç']],
@@ -243,7 +245,7 @@ def changeWordToNumber(utt): # TO FIX: for large numbers, it recognizes one by o
 def traductionChained(utt, languages):
 
     tr = Translater()
-    tr.set_key('trnsl.1.1.20200203T095917Z.30bf7af5cf091999.513bc5df39c8c45fd3cc2baa0ee4c8af7669202a')
+    tr.set_key(config_details['yandex_api_key'])
     tr.set_text(utt)
     originLang = tr.detect_lang()
     tr.set_from_lang(originLang)
@@ -402,13 +404,13 @@ def activeToPassive(utt, nlp):
             if str(key) == str(index):
                 for value in indexWordsDict[key]:
                     listAux.append(doc.sentences[0].words[int(value)-1])
-                    findDependencyBtWords(doc.sentences[0].words[int(value)-1].index, indexWordsDict, doc, listAux)
+                    findDependencyBtWords(doc.sentences[0].words[int(value)-1].id, indexWordsDict, doc, listAux)
     #				print("-------------------------------------")
     #				print(key, index, doc.sentences[0].words[int(value)-1])
     #				print("-------------------------------------")
         return []
 
-    def findDirectGovernors(index, indexWordsDict, doc):
+    def findDirectGovernors(index, indexWordsDict, doc, listAux=None):
 
         for key in indexWordsDict.keys():
             if str(key) == str(index):
@@ -432,13 +434,13 @@ def activeToPassive(utt, nlp):
         # also de dependencies of each word
     for word in doc.sentences[0].words:
         print(word)
-        if not word.governor in indexWordsDict.keys():
-            indexWordsDict[word.governor] = []
-        indexWordsDict[word.governor].append(word.index) # De esta manera nos quedamos con las palabras relacionadas con el objeto
-        if word.dependency_relation == 'obj':
-            indexObj = word.index
-        elif word.dependency_relation == 'root':
-            indexRoot = word.index
+        if not word.head in indexWordsDict.keys():
+            indexWordsDict[word.head] = []
+        indexWordsDict[word.head].append(word.id) # De esta manera nos quedamos con las palabras relacionadas con el objeto
+        if word.deprel == 'obj':
+            indexObj = word.id
+        elif word.deprel == 'root':
+            indexRoot = word.id
         elif word.lemma	== 'not':
             negative = True
     # Collect all the words that depends on the object and sort them
@@ -870,7 +872,10 @@ def generateUtterances(functions, chatbot, dirFunction, distribution, parameters
 
     #print("inputsAux: ", inputsAux)
     #stanfordnlp.download('en') ejecutar en la consola para instalar el idioma inglés
-    nlp = stanfordnlp.Pipeline()
+    #nlp = stanfordnlp.Pipeline()
+
+    stanza.download('en')
+    nlp = stanza.Pipeline('en')
 
     for inAux in inputsAux:
         generatedUtterances = []
@@ -882,7 +887,8 @@ def generateUtterances(functions, chatbot, dirFunction, distribution, parameters
             for utt in inputUtts:
                 function = choices(functions, distribution)[0]
                 generatedUtterances.append(useFunction(utt, function, botDir, parameters, nlp))
-            #print(generatedUtterances)
+            print("Generated Utterances:")
+            print(generatedUtterances)
             writeGeneratedUttFile(inputFilename, botDir, dirFunction, firstLine, generatedUtterances)
 
 
@@ -907,7 +913,7 @@ if __name__ == "__main__":
     # stanfordnlp is out of date, and to use stanza (https://github.com/stanfordnlp/stanza)
 
     generateUtterances(["mutateUtterance", "mutateUtteranceWithDistances", "deleteChars", "traductionChained",
-						"randomTraductionChained", "changeNumberToWord", "changeWordToNumber", "noMutation"],
-					   config_details['chatbot_to_test'],
-					   "",
-					   [0, 0, 0, 0, 0, 0, 0.2, 0])
+                        "randomTraductionChained", "changeNumberToWord", "changeWordToNumber", "noMutation"],
+					    config_details['chatbot_to_test'],
+                        "",
+                        [0, 0, 0, 0, 0, 0, 0.2, 0])
