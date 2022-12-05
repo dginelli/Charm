@@ -432,6 +432,9 @@ def activeToPassive(utt, nlp):
     # this par corresponds to the first 3 steps
         # get the index of the object
         # also de dependencies of each word
+    # Look at this example (https://github.com/stanfordnlp/stanza/blob/011b6c4831a614439c599fd163a9b40b7c225566/stanza/pipeline/demo/demo_server.py#L46-L48)
+    # for mapping stanfordnlp parameters with stanza parameters
+    # Properties of a Word in Stanza: https://stanfordnlp.github.io/stanza/data_objects.html#word
     for word in doc.sentences[0].words:
         print(word)
         if not word.head in indexWordsDict.keys():
