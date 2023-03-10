@@ -8,6 +8,21 @@ If you want to have a detailed explanation of the project I invite you to read t
 ## How to use it
 In this guide I am going to explain how to use Charm tool to get your convos and mutate them so you can test your chatbot freely.
 
+### Configuration
+
+Create a file named `config.cfg` and put it in the folder `Charm/proyecto/codigo/pythonscriptspythonscripts`.
+Open the file and add these values:
+
+```
+[project]
+root_project_dir = <Path of Charm folder>
+chatbot_to_test = <Name of the folder containing the bot you want to test>
+yandex_api_key=<Your Yandex API Key>
+```
+
+- You have to put the folder containing the bot you want test here: `Charm/chatbots/`
+- To can create a Yandex API Key here: [https://yandex.com/dev/predictor/keys/get/](https://yandex.com/dev/predictor/keys/get/).
+
 ### Generate convos from dialogflow
 
 1. To generate convo files you have to download the chatbot from Dialogflow.
