@@ -251,7 +251,7 @@ def gridTest():
 	startExec = timeit.timeit()
 	for chatbot in chatbots:
 
-		statsDir = "/home/sergio/Desktop/proyecto/codigo/output/{}/mutateUtteranceStats.txt".format(chatbot)
+		statsDir = config_details['root_project_dir'] + "/proyecto/codigo/output/{}/mutateUtteranceWithDistancesStats.txt".format(chatbot)
 		if exists(statsDir):
 			remove(statsDir)
 #		start1 = timeit.timeit()
@@ -259,7 +259,7 @@ def gridTest():
 #		end1 = timeit.timeit()
 #		print("\n mutateTime for ", chatbot, ": ",(end1 - start1))
 		
-		statsDir = "/home/sergio/Desktop/proyecto/codigo/output/{}/mutateUtteranceWithDistancesStats.txt".format(chatbot)
+		statsDir = config_details['root_project_dir'] + "/proyecto/codigo/output/{}/mutateUtteranceWithDistancesStats.txt".format(chatbot)
 		if exists(statsDir):
 			remove(statsDir)
 #		start2 = timeit.timeit()
@@ -267,7 +267,7 @@ def gridTest():
 #		end2 = timeit.timeit()
 #		print("\n mutateWithDistanceTime for ", chatbot, ": ",(end2 - start2))
 		
-		statsDir = "/home/sergio/Desktop/proyecto/codigo/output/{}/deleteCharsStats.txt".format(chatbot)
+		statsDir = config_details['root_project_dir'] + "/proyecto/codigo/output/{}/mutateUtteranceWithDistancesStats.txt".format(chatbot)
 		if exists(statsDir):
 			remove(statsDir)
 
@@ -332,7 +332,15 @@ def gridTest():
 	endExec = timeit.timeit()
 	print("\n total exec time: ", chatbot, ": ",(endExec - startExec))
 
+def get_config_dict(section_name):
+    if not hasattr(get_config_dict, 'config_dict'):
+        get_config_dict.config_dict = dict(config.items(section_name))
+    return get_config_dict.config_dict
+
 if __name__ == "__main__":
+	config = configparser.RawConfigParser()
+	config.read('./config.cfg')
+	config_details = get_config_dict('project')
 
 	gridTest()
 

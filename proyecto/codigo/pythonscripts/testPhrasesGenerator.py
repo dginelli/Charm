@@ -94,6 +94,9 @@ def getNearbyKeys(key, keyboardConfig):
 """
 
 def mutateUtteranceWithDistances(utt, botDir, percentage=10, variability=0, keyboardConfig=keyboardQWERTYSpanish):
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
+    config_details = get_config_dict('project')
     counter = 0
     for pos, letter in enumerate(utt):
         if not(letter.isspace()):
@@ -145,6 +148,9 @@ def mutateUtterance(utt, botDir, percentage=10, variability=0):
         variability: the value that the percentage will increase if there is a mutation
 """
 def deleteChars(utt, botDir, percentage=10, variability=0):
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
+    config_details = get_config_dict('project')
     position = 0
     counter = 0
     lengthUtt = len(utt)
@@ -243,6 +249,9 @@ def changeWordToNumber(utt): # TO FIX: for large numbers, it recognizes one by o
 # TIENEN UN MAXIMO DE TRADUCCIONES PERMITIDAS, VER SI HAY ALGUNO GRATUITO QUE PERMITA HACER MÁS TRADUCCIONES.
 
 def traductionChained(utt, languages):
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
+    config_details = get_config_dict('project')
 
     tr = Translater()
     tr.set_key(config_details['yandex_api_key'])
@@ -896,6 +905,8 @@ def generateUtterances(functions, chatbot, dirFunction, distribution, parameters
 
 
 def get_config_dict(section_name):
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
     if not hasattr(get_config_dict, 'config_dict'):
         get_config_dict.config_dict = dict(config.items(section_name))
     return get_config_dict.config_dict
@@ -915,8 +926,8 @@ if __name__ == "__main__":
     # Issue on GitHub: https://github.com/stanfordnlp/stanfordnlp/issues/6 (They say that
     # stanfordnlp is out of date, and to use stanza (https://github.com/stanfordnlp/stanza)
 
-    generateUtterances(["mutateUtterance", "mutateUtteranceWithDistances", "deleteChars", "traductionChained",
-                        "randomTraductionChained", "changeNumberToWord", "changeWordToNumber", "noMutation"],
+    generateUtterances(["mutateUtterance", "mutateUtteranceWithDistances", "deleteChars", "traductionChained", "randomTraductionChained", "changeNumberToWord", "changeWordToNumber",
+				"activeToPassive", "convertAdjectivesToSynonyms", "convertAdjectivesToAntonyms", "convertObjectsToSynonyms", "convertAdverbsToSynonyms", "convertAdverbsToAntonyms", "noMutation"],
 					    config_details['chatbot_to_test'],
                         "",
-                        [0, 0, 0, 0, 0, 0, 0.2, 0])
+                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
