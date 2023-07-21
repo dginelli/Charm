@@ -123,6 +123,9 @@ def mutateUtteranceWithDistances(utt, botDir, percentage=10, variability=0, keyb
         variability: the value that the percentage will increase if there is a mutation
 """
 def mutateUtterance(utt, botDir, percentage=10, variability=0):
+    config = configparser.RawConfigParser()
+    config.read('./config.cfg')
+    config_details = get_config_dict('project')
     counter = 0
     keysAscii = list(printable.strip(whitespace))
     for position, letter in enumerate(utt):
